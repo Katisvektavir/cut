@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+import sys
+
+FROM = 0
+TO = -1
+NUMBERS = False
+
+files = []
+
+def print_file(fl,fr,to):
+    i = 1
+    for s in fl:
+        if  i >= fr and (to < 0 or i <= to):
+            print((str(i) + " " if NUMBERS else "") + s, end="")
+                
+        if to > 0 and i > to:
+            return
+
+        i += 1
+
+
+if len(sys.argv) > 1:
+
+    skip = False
+    
+    for i in range(1, len(sys.argv)):
+        if skip:
+            skip = False
+            continue
+
+        if sys.argv[i][0] == "-":
+            if sys.argv[i] == "-h" or sys.argv[i] == "--help":
+                print("""usage cut [OPTION]... [FILE]...
+-f N  --from N  from N'th line
+-t N  --to N    to N'th line
+-n --number     print numbers of lines 
+-h --help       display this help and exit
+-v --version    output version information and exit""")
+                exit()
+            elif sys.argv[i] == "-v" or sys.argv[i] == "--version":
+                print("""cut 0.1
+Written by Mark & Stefan""")
+                exit()
+            elif sys.argv[i] == "-n" or sys.argv[i] == "--numbers":
+                NUMBERS = True
+            elif sys.argv[i] == "-f" or sys.argv[i] == "--from":
+                FROM = int(sys.argv[i + 1])
+                skip = True
+            elif sys.argv[i] == "-t" or sys.argv[i] == "--to":
+                TO = int(sys. argv[i + 1])
+                skip = True
+            else:
+                print("invalid option " + sys.argv[i])
+                exit()
+        else:
+            files.append(sys.argv[i])
+
+if len(files) > 0:
+    for i in files:
+        with open(i) as fl:
+            print_file(fl, FROM, TO)
+
+else:
+    print_file(sys.stdin, FROM, TO)
+
+
+
+
